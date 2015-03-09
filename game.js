@@ -82,10 +82,12 @@ var gameOfLife = {
     var resetBtn = document.getElementById('reset_btn');
     var clearBtn = document.getElementById('clear_btn');
     var pauseBtn = document.getElementById('pause_btn');
+
     stepBtn.onclick = this.step;
     playBtn.onclick = this.enableAutoPlay;
     resetBtn.onclick = this.resetRandom;
     clearBtn.onclick = this.clearBoard;
+
     pauseBtn.onclick = function(){
       if(gameOfLife.pause) gameOfLife.pause = false;
       else gameOfLife.pause = true;
