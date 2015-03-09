@@ -191,7 +191,7 @@ var gameOfLife = {
     function start(){
       if(!gameOfLife.pause){
         gameOfLife.step();
-        setTimeout(start, 600);
+        setTimeout(start, 300);
         
       }
     // Start Auto-Play by running the 'step' function
