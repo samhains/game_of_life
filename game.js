@@ -2,6 +2,7 @@ var gameOfLife = {
   width: 20,
   height: 20,
   stepInterval: null,
+  cells: [],
 
   createAndShowBoard: function () {
     // create <table> element
@@ -10,6 +11,7 @@ var gameOfLife = {
 
     // build Table HTML
     var tablehtml = '';
+    //console.log(this);
     for (var h=0; h<this.height; h++) {
       tablehtml += "<tr id='row+" + h + "'>";
       for (var w=0; w<this.width; w++) {
@@ -28,22 +30,10 @@ var gameOfLife = {
   },
 
   forEachCell: function (iteratorFunc) {
-    var gameBoard = document.getElementsByTagName('tbody')[0];
-    for (var i = 0; i < gameBoard.children.length; i++) {
-      var row = gameBoard.children[i].children;
-      for (var j = 0; j < row.length; j++) {
-        iteratorFunc(row[j]);
-
-      }
-    }
-
-
-    /*
-      Write forEachCell here. You will have to visit
-      each cell on the board, call the "iteratorFunc" function,
-      and pass into func, the cell and the cell's x & y
-      coordinates. For example: iteratorFunc(cell, x, y)
-    */
+    var cells = document.getElementsByTagName('td');
+    Array.prototype.forEach.call(cells, function(cell){
+      iteratorFunc(cell);
+    });
 
   },
 
@@ -82,16 +72,18 @@ var gameOfLife = {
     var resetBtn = document.getElementById('reset_btn');
     var clearBtn = document.getElementById('clear_btn');
     var pauseBtn = document.getElementById('pause_btn');
+    stepBtn.onclick = this.step.bind(this);
+    playBtn.onclick = this.enableAutoPlay.bind(this);
+    resetBtn.onclick = this.resetRandom.bind(this);
+    clearBtn.onclick = this.clearBoard.bind(this);
 
-    stepBtn.onclick = this.step;
-    playBtn.onclick = this.enableAutoPlay;
-    resetBtn.onclick = this.resetRandom;
-    clearBtn.onclick = this.clearBoard;
 
     pauseBtn.onclick = function(){
-      if(gameOfLife.pause) gameOfLife.pause = false;
-      else gameOfLife.pause = true;
-    };
+            //console.log("in pause",this.pause);
+
+      if(this.pause) this.pause = false;
+      else this.pause = true;
+    }.bind(this);
 
 
     var onCellIterator = function (e) {
@@ -103,8 +95,8 @@ var gameOfLife = {
 
   step: function () {
     var gridArray = [];
-    var xMax = gameOfLife.width;
-    var yMax = gameOfLife.height;
+    var xMax = this.width;
+    var yMax = this.height;
 
     for (var i = 0; i <xMax; i++) {
       gridArray[i] = [];
@@ -133,13 +125,13 @@ var gameOfLife = {
     var rulesIterator = function(e){
       var status = e.className;
       var neighbors = 0;
-      var id = e.id.split('-');
-      var x = parseInt(id[0]);
-      var y = parseInt(id[1]);
+      var id = e.id.split('-').map(parseFloat);
+      var x = id[0];
+      var y = id[1];
 
       for(var c=-1;c<2;c++){
           for(var d=-1;d<2;d++){
-              if((x+c)<0 || (x+c) >=gameOfLife.width)
+              if((x+c)<0 || (x+c) >=this.width)
                 continue;
 
 
@@ -169,8 +161,8 @@ var gameOfLife = {
       }
     };
 
-    gameOfLife.forEachCell(stepIterator);
-    gameOfLife.forEachCell(rulesIterator);
+    this.forEachCell(stepIterator.bind(this));
+    this.forEachCell(rulesIterator.bind(this));
 
 
 
@@ -187,11 +179,14 @@ var gameOfLife = {
   },
 
   enableAutoPlay: function () {
-    gameOfLife.pause = false;
+    this.pause = false;
+
     function start(){
-      if(!gameOfLife.pause){
-        gameOfLife.step();
-        setTimeout(start, 300);
+      //console.log("in start",this.pause);
+      
+      if(!this.pause){
+        this.step();
+        setTimeout(start.bind(this), 300);
         
       }
     // Start Auto-Play by running the 'step' function
@@ -199,7 +194,7 @@ var gameOfLife = {
 
    }
 
-   start();
+   start.bind(this)();
    
   },
 
@@ -210,8 +205,8 @@ var gameOfLife = {
       e.setAttribute('data-status', 'dead');
 
     };
-    gameOfLife.forEachCell(clearIterator);
-    gameOfLife.pause = true;
+    this.forEachCell(clearIterator);
+    this.pause = true;
   },
   pause: true,
 
@@ -226,7 +221,7 @@ var gameOfLife = {
           e.setAttribute('data-status', 'dead');
         }
     };
-    gameOfLife.forEachCell(randomIterator);
+    this.forEachCell(randomIterator);
   }
 };
 
