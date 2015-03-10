@@ -1,3 +1,4 @@
+
 var gameOfLife = {
   width: 20,
   height: 20,
@@ -404,5 +405,6 @@ var gameOfLife = {
 };
 
 gameOfLife.createAndShowBoard();
+
 
 
